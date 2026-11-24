@@ -73,7 +73,7 @@ function Planted({ flower, slot, fresh }: { flower: Flower; slot: { row: number;
 }
 
 /** Jardim paginado: 21 flores por página, páginas alternando sozinhas. */
-export function FlowerField({ flowers, fresh, pagerTop = 296 }: { flowers: Flower[]; fresh: Set<string>; pagerTop?: number }) {
+export function FlowerField({ flowers, fresh, pagerTop = 330 }: { flowers: Flower[]; fresh: Set<string>; pagerTop?: number }) {
   const pages = Math.max(1, Math.ceil(flowers.length / PER_PAGE));
   const [page, setPage] = useState(0);
 

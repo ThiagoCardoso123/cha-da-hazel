@@ -310,14 +310,22 @@ function Sky({ rainbow }: { rainbow: boolean }) {
 }
 
 function Title({ compact }: { compact: boolean }) {
+  const credit = 'Desenvolvido pelo papai ♥';
+  if (compact) {
+    return (
+      <div className="absolute flex items-baseline" style={{ left: 96, top: 34, gap: 36 }}>
+        <p className="font-hand m-0 text-bark" style={{ fontSize: 64, lineHeight: 1.45 }}>Chá da Hazel</p>
+        <p className="font-hand m-0 text-bark-soft" style={{ fontSize: 28 }}>{credit}</p>
+      </div>
+    );
+  }
   return (
-    <div className="absolute" style={{ left: 96, top: compact ? 34 : 46 }}>
-      <p className="font-hand m-0 text-bark" style={{ fontSize: compact ? 64 : 118, lineHeight: 1.45 }}>Chá da Hazel</p>
-      {!compact && (
-        <p className="m-0 text-bark-soft" style={{ fontSize: 34, marginTop: -8, maxWidth: 900 }}>
-          Hoje, cada um de vocês faz parte da nossa história.
-        </p>
-      )}
+    <div className="absolute" style={{ left: 96, top: 46 }}>
+      <p className="font-hand m-0 text-bark" style={{ fontSize: 118, lineHeight: 1.45 }}>Chá da Hazel</p>
+      <p className="m-0 text-bark-soft" style={{ fontSize: 34, marginTop: -8, maxWidth: 900 }}>
+        Hoje, cada um de vocês faz parte da nossa história.
+      </p>
+      <p className="font-hand m-0 text-bark-soft" style={{ fontSize: 28, marginTop: 6 }}>{credit}</p>
     </div>
   );
 }
