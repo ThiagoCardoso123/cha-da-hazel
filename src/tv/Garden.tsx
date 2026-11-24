@@ -36,12 +36,23 @@ function Bed({ index }: { index: number }) {
   );
 }
 
-function Planted({ flower, slot, fresh }: { flower: Flower; slot: { row: number; col: number }; fresh: boolean }) {
+/** Onde fica a flor que ocupa a posição `index` (0–20) da página. */
+export function spotOf(flower: Flower, index: number) {
+  const slot = SLOTS[index % PER_PAGE];
   const row = ROWS[slot.row];
   const r = hash(flower.participant_id);
-  const size = Math.round(124 * row.scale);
-  const x = row.x0 + slot.col * SLOT_GAP + Math.round((r - 0.5) * 26);
-  const y = row.y + Math.round((hash(flower.participant_id + 'y') - 0.5) * 18);
+  return {
+    slot,
+    row,
+    r,
+    size: Math.round(124 * row.scale),
+    x: row.x0 + slot.col * SLOT_GAP + Math.round((r - 0.5) * 26),
+    y: row.y + Math.round((hash(flower.participant_id + 'y') - 0.5) * 18),
+  };
+}
+
+function Planted({ flower, index, fresh }: { flower: Flower; index: number; fresh: boolean }) {
+  const { row, r, size, x, y } = spotOf(flower, index);
   const stemH = row.base - y + 20;
   return (
     <div className="absolute" style={{ left: x - 110, top: y - size / 2, width: 220, height: size / 2 + stemH }}>
@@ -72,41 +83,51 @@ function Planted({ flower, slot, fresh }: { flower: Flower; slot: { row: number;
   );
 }
 
-/** Jardim paginado: 21 flores por página, páginas alternando sozinhas. */
-export function FlowerField({ flowers, fresh, pagerTop = 296 }: { flowers: Flower[]; fresh: Set<string>; pagerTop?: number }) {
+/**
+ * Jardim paginado: 21 flores por página, páginas alternando sozinhas.
+ * `focusId` leva o jardim à página daquela flor e segura a troca enquanto durar.
+ */
+export function FlowerField({ flowers, fresh, pagerTop = 296, focusId = null, roamingBee = false }: {
+  flowers: Flower[]; fresh: Set<string>; pagerTop?: number; focusId?: string | null; roamingBee?: boolean;
+}) {
   const pages = Math.max(1, Math.ceil(flowers.length / PER_PAGE));
   const [page, setPage] = useState(0);
+  const held = useRef(false);
+  held.current = focusId !== null;
 
   useEffect(() => {
     if (pages <= 1) return;
-    const id = window.setInterval(() => setPage((p) => (p + 1) % pages), 14000);
+    const id = window.setInterval(() => {
+      if (!held.current) setPage((p) => (p + 1) % pages);
+    }, 14000);
     return () => window.clearInterval(id);
   }, [pages]);
 
-  // Flor nova: mostra a página onde ela nasceu.
+  // Flor nova ou flor em foco: mostra a página onde ela está.
   useEffect(() => {
-    if (fresh.size === 0) return;
-    const idx = flowers.findIndex((f) => fresh.has(f.participant_id));
+    const idx = focusId !== null
+      ? flowers.findIndex((f) => f.participant_id === focusId)
+      : fresh.size > 0 ? flowers.findIndex((f) => fresh.has(f.participant_id)) : -1;
     if (idx >= 0) setPage(Math.floor(idx / PER_PAGE));
-  }, [fresh, flowers]);
+  }, [fresh, flowers, focusId]);
 
   const current = Math.min(page, pages - 1);
   const visible = flowers.slice(current * PER_PAGE, current * PER_PAGE + PER_PAGE);
-  const byRow = (row: number) => visible.map((f, i) => ({ f, slot: SLOTS[i] })).filter((x) => x.slot.row === row);
+  const byRow = (row: number) => visible.map((f, i) => ({ f, i })).filter((x) => SLOTS[x.i].row === row);
 
   return (
     <div className="absolute inset-0">
       {[0, 1, 2].map((row) => (
         <div key={row} className="absolute inset-0">
           <div key={current} className="anim-fade absolute inset-0">
-            {byRow(row).map(({ f, slot }) => (
-              <Planted key={f.participant_id} flower={f} slot={slot} fresh={fresh.has(f.participant_id)} />
+            {byRow(row).map(({ f, i }) => (
+              <Planted key={f.participant_id} flower={f} index={i} fresh={fresh.has(f.participant_id)} />
             ))}
           </div>
           <Bed index={row} />
         </div>
       ))}
-      {flowers.length > 0 && (
+      {roamingBee && flowers.length > 0 && (
         <div className="bee absolute left-0 top-0">
           <div className="bee-bob"><Bee /></div>
         </div>
@@ -140,48 +161,83 @@ function MessageCard({ message }: { message: Message }) {
   );
 }
 
+const FLIGHT_MS = 2600;
+const skySpot = () => ({ x: 260 + Math.random() * 1000, y: 430 + Math.random() * 70 });
+
 export function GardenMode({ content, seconds }: { content: TvContent; seconds: number }) {
   const { flowers, messages, queue, queueSignal, fresh } = content;
   const [card, setCard] = useState<Message | null>(null);
+  /** recado escolhido, enquanto a abelha voa até a flor de quem escreveu */
+  const [chosen, setChosen] = useState<Message | null>(null);
+  const [bee, setBee] = useState({ x: -90, y: 480, left: false });
   const [tick, setTick] = useState(0);
   const idle = useRef(0);
   const messagesRef = useRef(messages);
   messagesRef.current = messages;
+  const flowersRef = useRef(flowers);
+  flowersRef.current = flowers;
 
-  // Recado retirado pelos pais enquanto está na tela: sai na hora.
+  const flyTo = (to: { x: number; y: number }) => setBee((b) => ({ x: to.x, y: to.y, left: to.x < b.x }));
+
+  // Recado retirado pelos pais enquanto está na tela (ou a caminho): sai na hora.
   useEffect(() => {
     if (card && !messages.some((m) => m.id === card.id)) setCard(null);
-  }, [messages, card]);
+    if (chosen && !messages.some((m) => m.id === chosen.id)) setChosen(null);
+  }, [messages, card, chosen]);
 
   /**
-   * Um cartão por vez. Fila de novidades primeiro; sem novidades, alterna
-   * entre a vista do jardim e recados já aprovados. Com fila longa o tempo
-   * de cada cartão encurta, para a sequência não se arrastar.
+   * A abelha escolhe: voa até o girassol de quem escreveu, pousa, e o recado se abre.
+   * Um cartão por vez. Novidades primeiro; sem novidades, ela visita recados já enviados.
+   * Com fila longa, cada cartão fica menos tempo, para a sequência não se arrastar.
    */
   useEffect(() => {
     if (card) {
       const backlog = queue.current.length;
       const show = backlog > 4 ? Math.max(4, seconds * 0.5) : backlog > 1 ? Math.max(5, seconds * 0.75) : seconds;
-      const id = window.setTimeout(() => setCard(null), show * 1000);
+      const id = window.setTimeout(() => {
+        setCard(null);
+        flyTo(skySpot());
+      }, show * 1000);
       return () => window.clearTimeout(id);
     }
-    const wait = queue.current.length > 0 ? 1800 : 9000;
+    if (chosen) {
+      const id = window.setTimeout(() => {
+        setCard(chosen);
+        setChosen(null);
+      }, FLIGHT_MS + 900);
+      return () => window.clearTimeout(id);
+    }
+    const wait = queue.current.length > 0 ? 1500 : 7000;
     const id = window.setTimeout(() => {
-      const next = queue.current.shift();
-      if (next) return setCard(next);
-      const all = messagesRef.current;
-      if (all.length > 0) {
+      let next = queue.current.shift();
+      if (!next) {
+        const all = messagesRef.current;
+        if (all.length === 0) return setTick((n) => n + 1);
         idle.current = (idle.current + 1) % all.length;
-        return setCard(all[idle.current]);
+        next = all[idle.current];
       }
-      setTick((n) => n + 1);
+      const author = next.participant_id;
+      const index = flowersRef.current.findIndex((f) => f.participant_id === author);
+      if (index < 0) return setCard(next);
+      const spot = spotOf(flowersRef.current[index], index);
+      flyTo({ x: spot.x - 24, y: spot.y - spot.size / 2 - 22 });
+      setChosen(next);
     }, wait);
     return () => window.clearTimeout(id);
-  }, [card, tick, queueSignal, seconds, queue]);
+  }, [card, chosen, tick, queueSignal, seconds, queue]);
 
+  const focus = chosen ?? card;
   return (
     <div className="absolute inset-0">
-      <FlowerField flowers={flowers} fresh={fresh} />
+      <FlowerField flowers={flowers} fresh={fresh} focusId={focus ? focus.participant_id : null} />
+      {flowers.length > 0 && (
+        <div className="absolute left-0 top-0" aria-hidden="true"
+          style={{ transform: `translate(${bee.x}px, ${bee.y}px)`, transition: `transform ${FLIGHT_MS}ms cubic-bezier(0.45, 0.05, 0.3, 1)`, willChange: 'transform' }}>
+          <div style={{ transform: bee.left ? 'scaleX(-1)' : undefined }}>
+            <div className={card ? '' : 'bee-bob'}><Bee /></div>
+          </div>
+        </div>
+      )}
       {flowers.length === 0 && !card && (
         <div className="absolute text-center" style={{ left: 300, right: 520, top: 360 }}>
           <p className="font-hand m-0 text-bark" style={{ fontSize: 58 }}>O jardim espera o primeiro girassol</p>
@@ -201,7 +257,7 @@ export function ClosingMode({ content }: { content: TvContent }) {
   const none = useMemo(() => new Set<string>(), []);
   return (
     <div className="absolute inset-0">
-      <FlowerField flowers={content.flowers} fresh={none} pagerTop={430} />
+      <FlowerField flowers={content.flowers} fresh={none} pagerTop={430} roamingBee />
       <p className="font-hand anim-fade absolute m-0 text-bark-soft" style={{ right: 96, top: 40, fontSize: 30, animationDelay: '1.2s' }}>
         <span className="rounded-full bg-paper/85 px-6 py-1">Desenvolvido pelo papai ♥</span>
       </p>
