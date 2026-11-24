@@ -326,17 +326,17 @@ function QrCard({ joinCode }: { joinCode: string }) {
   const url = `${PUBLIC_URL}/?c=${encodeURIComponent(joinCode)}`;
   const short = PUBLIC_URL.replace(/^https?:\/\//, '');
   return (
-    <div className="absolute rounded-[36px] bg-paper text-center shadow-[0_6px_0_rgba(138,90,59,0.12)]"
-      style={{ right: 96, top: 54, width: 330, padding: '26px 24px 14px' }}>
-      <p className="m-0 font-bold text-bark" style={{ fontSize: 30, lineHeight: 1.15 }}>Participe pelo celular</p>
-      <div className="mx-auto mt-4 rounded-2xl bg-white p-3" style={{ width: 254 }}>
-        <QRCodeSVG value={url} size={230} level="M" bgColor="#ffffff" fgColor="#3d2c1f" />
+    <div className="absolute rounded-[28px] bg-paper text-center shadow-[0_5px_0_rgba(138,90,59,0.12)]"
+      style={{ right: 96, top: 54, width: 262, padding: '16px 16px 8px' }}>
+      <p className="m-0 font-bold text-bark" style={{ fontSize: 23, lineHeight: 1.15 }}>Participe pelo celular</p>
+      <div className="mx-auto mt-2 rounded-xl bg-white p-2" style={{ width: 206 }}>
+        <QRCodeSVG value={url} size={190} level="M" bgColor="#ffffff" fgColor="#3d2c1f" />
       </div>
-      <p className="m-0 mt-3 break-all text-bark" style={{ fontSize: short.length > 24 ? 20 : 24, lineHeight: 1.2 }}>{short}</p>
-      <p className="m-0 mt-1 text-bark-soft" style={{ fontSize: 22 }}>
-        código <strong className="tracking-widest text-bark" style={{ fontSize: 28 }}>{joinCode}</strong>
+      <p className="m-0 mt-2 break-all text-bark" style={{ fontSize: short.length > 24 ? 16 : 19, lineHeight: 1.2 }}>{short}</p>
+      <p className="m-0 text-bark-soft" style={{ fontSize: 18 }}>
+        código <strong className="tracking-widest text-bark" style={{ fontSize: 23 }}>{joinCode}</strong>
       </p>
-      <p className="font-hand m-0 mt-2 border-t border-butter-deep/60 pt-2 text-bark-soft" style={{ fontSize: 22, lineHeight: 1.5 }}>
+      <p className="font-hand m-0 mt-1 border-t border-butter-deep/60 pt-1 text-bark-soft" style={{ fontSize: 17, lineHeight: 1.5 }}>
         Desenvolvido pelo papai ♥
       </p>
     </div>
