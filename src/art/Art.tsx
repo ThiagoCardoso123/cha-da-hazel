@@ -98,3 +98,26 @@ export function Rainbow({ width = 220, opacity = 0.75 }: { width?: number; opaci
     </svg>
   );
 }
+
+/** Abelha do jardim, voltada para a direita. */
+export function Bee({ size = 64 }: { size?: number }) {
+  return (
+    <svg width={size} height={size * 0.75} viewBox="0 0 80 60" aria-hidden="true" focusable="false">
+      <g className="bee-wing">
+        <ellipse cx="34" cy="17" rx="10" ry="15" transform="rotate(-18 34 17)" fill="#ffffff" fillOpacity="0.85" stroke="#b8cfe0" strokeWidth="1.2" />
+        <ellipse cx="47" cy="16" rx="9" ry="14" transform="rotate(14 47 16)" fill="#ffffff" fillOpacity="0.8" stroke="#b8cfe0" strokeWidth="1.2" />
+      </g>
+      <g filter="url(#aquarela)">
+        <path d="M8 40 L1 37 L8 34 Z" fill="#5c3a25" />
+        <ellipse cx="34" cy="38" rx="27" ry="15" fill="#f2c94c" />
+        <path d="M22 25 C 18 33, 18 43, 22 51" stroke="#5c3a25" strokeWidth="6" fill="none" strokeLinecap="round" />
+        <path d="M35 23 C 31 33, 31 43, 35 53" stroke="#5c3a25" strokeWidth="6" fill="none" strokeLinecap="round" />
+        <path d="M47 25 C 44 33, 44 43, 47 51" stroke="#5c3a25" strokeWidth="5" fill="none" strokeLinecap="round" />
+        <circle cx="62" cy="36" r="12" fill="#5c3a25" />
+        <circle cx="66" cy="33" r="2.6" fill="#fffdf5" />
+        <path d="M60 25 C 60 17, 66 14, 70 13" stroke="#5c3a25" strokeWidth="2" fill="none" strokeLinecap="round" />
+        <path d="M66 26 C 68 19, 73 18, 77 18" stroke="#5c3a25" strokeWidth="2" fill="none" strokeLinecap="round" />
+      </g>
+    </svg>
+  );
+}

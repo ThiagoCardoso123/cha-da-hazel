@@ -99,6 +99,32 @@ button {
   to { transform: rotate(360deg); }
 }
 
+/* Abelha do jardim: entra pela esquerda, pousa na primeira flor plantada (frente, ao centro),
+   depois numa flor da fileira do meio, e sai pela direita. */
+@keyframes bee-path {
+  0% { transform: translate(-90px, 500px) rotate(-4deg); }
+  14% { transform: translate(430px, 560px) rotate(10deg); }
+  27% { transform: translate(880px, 790px) rotate(14deg); }
+  30% { transform: translate(926px, 834px) rotate(6deg); }
+  41% { transform: translate(926px, 834px) rotate(6deg); }
+  45% { transform: translate(960px, 740px) rotate(-14deg); }
+  50% { transform: translate(1046px, 686px) rotate(6deg); }
+  61% { transform: translate(1046px, 686px) rotate(6deg); }
+  66% { transform: translate(1150px, 600px) rotate(-14deg); }
+  100% { transform: translate(2010px, 470px) rotate(-2deg); }
+}
+@keyframes bee-bob {
+  0%, 100% { transform: translateY(-5px); }
+  50% { transform: translateY(5px); }
+}
+@keyframes bee-wing {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.35); }
+}
+.bee { animation: bee-path 38s linear infinite; will-change: transform; }
+.bee-bob { animation: bee-bob 1.3s ease-in-out infinite; }
+.bee-wing { animation: bee-wing 0.14s linear infinite; transform-origin: 50% 100%; transform-box: fill-box; }
+
 .anim-bloom { animation: bloom 1.6s cubic-bezier(0.2, 0.9, 0.3, 1) both; transform-origin: center; }
 .anim-grow { animation: grow 1.1s ease-out both; transform-origin: bottom center; }
 .anim-sway { animation: sway 7s ease-in-out infinite; transform-origin: bottom center; }
@@ -109,6 +135,8 @@ button {
 
 @media (prefers-reduced-motion: reduce) {
   .anim-bloom, .anim-grow, .anim-rise, .anim-card { animation: fade 0.3s ease-out both; }
-  .anim-sway, .anim-spin { animation: none; }
+  .anim-sway, .anim-spin, .bee-bob, .bee-wing { animation: none; }
+  /* sem movimento: a abelha fica pousada numa flor */
+  .bee { animation: none; transform: translate(926px, 834px) rotate(6deg); }
   * { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
 }

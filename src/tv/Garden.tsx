@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Flower, Message } from '../lib/types';
 import { hash } from '../lib/util';
-import { SunflowerHead } from '../art/Art';
+import { Bee, SunflowerHead } from '../art/Art';
 import { STAGE_H, STAGE_W, type TvContent } from './shared';
 
 // ------------------------------------------------------------------ canteiros
@@ -106,6 +106,11 @@ export function FlowerField({ flowers, fresh, pagerTop = 296 }: { flowers: Flowe
           <Bed index={row} />
         </div>
       ))}
+      {flowers.length > 0 && (
+        <div className="bee absolute left-0 top-0">
+          <div className="bee-bob"><Bee /></div>
+        </div>
+      )}
       {pages > 1 && (
         <p className="absolute m-0 rounded-full bg-paper/85 px-5 text-bark-soft" style={{ left: 96, top: pagerTop, fontSize: 24, lineHeight: '44px' }}>
           Jardim {current + 1} de {pages} ({flowers.length} girassóis)
