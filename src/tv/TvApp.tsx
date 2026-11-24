@@ -310,22 +310,14 @@ function Sky({ rainbow }: { rainbow: boolean }) {
 }
 
 function Title({ compact }: { compact: boolean }) {
-  const credit = 'Desenvolvido pelo papai ♥';
-  if (compact) {
-    return (
-      <div className="absolute flex items-baseline" style={{ left: 96, top: 34, gap: 36 }}>
-        <p className="font-hand m-0 text-bark" style={{ fontSize: 64, lineHeight: 1.45 }}>Chá da Hazel</p>
-        <p className="font-hand m-0 text-bark-soft" style={{ fontSize: 28 }}>{credit}</p>
-      </div>
-    );
-  }
   return (
-    <div className="absolute" style={{ left: 96, top: 46 }}>
-      <p className="font-hand m-0 text-bark" style={{ fontSize: 118, lineHeight: 1.45 }}>Chá da Hazel</p>
-      <p className="m-0 text-bark-soft" style={{ fontSize: 34, marginTop: -8, maxWidth: 900 }}>
-        Hoje, cada um de vocês faz parte da nossa história.
-      </p>
-      <p className="font-hand m-0 text-bark-soft" style={{ fontSize: 28, marginTop: 6 }}>{credit}</p>
+    <div className="absolute" style={{ left: 96, top: compact ? 34 : 46 }}>
+      <p className="font-hand m-0 text-bark" style={{ fontSize: compact ? 64 : 118, lineHeight: 1.45 }}>Chá da Hazel</p>
+      {!compact && (
+        <p className="m-0 text-bark-soft" style={{ fontSize: 34, marginTop: -8, maxWidth: 900 }}>
+          Hoje, cada um de vocês faz parte da nossa história.
+        </p>
+      )}
     </div>
   );
 }
@@ -335,7 +327,7 @@ function QrCard({ joinCode }: { joinCode: string }) {
   const short = PUBLIC_URL.replace(/^https?:\/\//, '');
   return (
     <div className="absolute rounded-[36px] bg-paper text-center shadow-[0_6px_0_rgba(138,90,59,0.12)]"
-      style={{ right: 96, top: 54, width: 330, padding: '26px 24px 22px' }}>
+      style={{ right: 96, top: 54, width: 330, padding: '26px 24px 14px' }}>
       <p className="m-0 font-bold text-bark" style={{ fontSize: 30, lineHeight: 1.15 }}>Participe pelo celular</p>
       <div className="mx-auto mt-4 rounded-2xl bg-white p-3" style={{ width: 254 }}>
         <QRCodeSVG value={url} size={230} level="M" bgColor="#ffffff" fgColor="#3d2c1f" />
@@ -343,6 +335,9 @@ function QrCard({ joinCode }: { joinCode: string }) {
       <p className="m-0 mt-3 break-all text-bark" style={{ fontSize: short.length > 24 ? 20 : 24, lineHeight: 1.2 }}>{short}</p>
       <p className="m-0 mt-1 text-bark-soft" style={{ fontSize: 22 }}>
         código <strong className="tracking-widest text-bark" style={{ fontSize: 28 }}>{joinCode}</strong>
+      </p>
+      <p className="font-hand m-0 mt-2 border-t border-butter-deep/60 pt-2 text-bark-soft" style={{ fontSize: 22, lineHeight: 1.5 }}>
+        Desenvolvido pelo papai ♥
       </p>
     </div>
   );
