@@ -197,6 +197,9 @@ export function ClosingMode({ content }: { content: TvContent }) {
   return (
     <div className="absolute inset-0">
       <FlowerField flowers={content.flowers} fresh={none} pagerTop={430} />
+      <p className="font-hand anim-fade absolute m-0 text-bark-soft" style={{ right: 96, bottom: 40, fontSize: 30, animationDelay: '1.2s' }}>
+        <span className="rounded-full bg-paper/85 px-6 py-1">Desenvolvido pelo papai ♥</span>
+      </p>
       <div className="absolute text-center" style={{ left: 120, right: 120, top: 70 }}>
         <p className="font-hand anim-rise m-0 text-bark" style={{ fontSize: 88, lineHeight: 1.5 }}>
           Hazel, antes mesmo de chegar,

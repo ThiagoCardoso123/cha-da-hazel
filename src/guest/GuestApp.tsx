@@ -111,8 +111,9 @@ const TITLES: Record<View, string> = {
 function Page({ children }: { children: ReactNode }) {
   return (
     <div className="paper relative min-h-full bg-cream">
-      <div className="relative mx-auto min-h-full w-full max-w-md px-5 pb-10 pt-[max(1.25rem,env(safe-area-inset-top))]">
+      <div className="relative mx-auto min-h-full w-full max-w-md px-5 pb-6 pt-[max(1.25rem,env(safe-area-inset-top))]">
         {children}
+        <footer className="font-hand mt-10 text-center text-base text-bark-soft">Desenvolvido pelo papai ♥</footer>
       </div>
     </div>
   );
