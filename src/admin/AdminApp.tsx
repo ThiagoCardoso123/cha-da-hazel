@@ -107,7 +107,7 @@ function Login({ onDone }: { onDone: () => void }) {
 // ------------------------------------------------------------------ painel
 
 const TABS: { id: Tab; label: string }[] = [
-  { id: 'moderar', label: 'Aprovar' },
+  { id: 'moderar', label: 'Conteúdo' },
   { id: 'tv', label: 'TV' },
   { id: 'quiz', label: 'Quiz' },
   { id: 'evento', label: 'Evento' },
@@ -177,7 +177,10 @@ function ModerationTab({ live, stats, onChanged }: { live: Live; stats: AdminSta
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loadError, setLoadError] = useState(false);
-  const [history, setHistory] = useState(false);
+  const [historyChoice, setHistory] = useState<boolean | null>(null);
+  const auto = Boolean(live.event?.auto_approve);
+  // sem aprovação prévia, a lista do que está na TV é a tela principal
+  const history = historyChoice ?? auto;
   const [confirm, setConfirm] = useState<{ kind: 'message' | 'photo'; id: string; label: string } | null>(null);
 
   const load = useCallback(async () => {
@@ -254,6 +257,15 @@ function ModerationTab({ live, stats, onChanged }: { live: Live; stats: AdminSta
       {error && <div className="mb-4"><Notice>{errorText(error)}</Notice></div>}
       {loadError && <div className="mb-4"><Notice onRetry={() => void load()}>Não foi possível atualizar as filas agora.</Notice></div>}
 
+      {auto && (
+        <div className="mb-5">
+          <Notice tone="info">
+            Recados e fotos vão direto para a TV. Se algo sair errado, toque em “Retirar da TV” na lista abaixo e peça para a pessoa enviar de novo.
+          </Notice>
+        </div>
+      )}
+
+      {(!auto || pendingM.length > 0) && (
       <Section title={`Recados aguardando (${pendingM.length})`}>
         {pendingM.length === 0 && <Empty title="Nenhum recado na fila" seed="fila-recados">Os novos aparecem aqui sozinhos.</Empty>}
         <div className="grid gap-3">
@@ -270,6 +282,9 @@ function ModerationTab({ live, stats, onChanged }: { live: Live; stats: AdminSta
         </div>
       </Section>
 
+      )}
+
+      {(!auto || pendingP.length > 0) && (
       <Section title={`Fotos aguardando (${pendingP.length})`}>
         {pendingP.length === 0 && <Empty title="Nenhuma foto na fila" seed="fila-fotos">As novas aparecem aqui sozinhas.</Empty>}
         <div className="grid gap-3">
@@ -290,12 +305,14 @@ function ModerationTab({ live, stats, onChanged }: { live: Live; stats: AdminSta
         </div>
       </Section>
 
-      <Section title="Já avaliados"
-        aside={<button type="button" className="min-h-11 font-bold text-leaf-deep underline underline-offset-4" onClick={() => setHistory((v) => !v)}
+      )}
+
+      <Section title={auto ? 'Enviados' : 'Já avaliados'}
+        aside={<button type="button" className="min-h-11 font-bold text-leaf-deep underline underline-offset-4" onClick={() => setHistory(!history)}
           aria-expanded={history}>{history ? 'Ocultar' : `Mostrar (${doneM.length + doneP.length})`}</button>}>
         {history && (
           <div className="grid gap-2">
-            {doneM.length + doneP.length === 0 && <p className="m-0 text-bark-soft">Nada avaliado ainda.</p>}
+            {doneM.length + doneP.length === 0 && <p className="m-0 text-bark-soft">{auto ? 'Nada foi enviado ainda.' : 'Nada avaliado ainda.'}</p>}
             {doneP.map((p) => (
               <HistoryRow key={p.id} status={p.status} disabled={busyId !== null}
                 onApprove={() => void act('photo', p.id, 'approved')}

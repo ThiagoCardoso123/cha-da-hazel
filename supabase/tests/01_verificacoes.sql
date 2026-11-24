@@ -30,6 +30,7 @@ insert into auth.users (id, email) values
  ('00000000-0000-0000-0000-0000000000ee', null);
 insert into public.admins values ('00000000-0000-0000-0000-00000000000a');
 update public.event_private set join_code = 'HAZEL', tv_key = 'chave-da-tv';
+update public.event set auto_approve = false;  -- os blocos abaixo testam o fluxo com aprovação
 \set admin '00000000-0000-0000-0000-00000000000a'
 \set ana   '00000000-0000-0000-0000-000000000001'
 \set beto  '00000000-0000-0000-0000-000000000002'
@@ -231,5 +232,29 @@ select set_config('request.jwt.claim.sub', :'admin', false);
 select t.ok('trocar chave', (public.admin_rotate_tv_key()->>'ok')::boolean);
 select set_config('request.jwt.claim.sub', :'tv', false);
 select t.ok('TV antiga perde acesso', (select count(*) from public.messages) = 0);
+reset role;
+
+-- ===== publicação direta (sem aprovação prévia) =====
+set role authenticated;
+select set_config('request.jwt.claim.sub', :'admin', false);
+update public.event set is_closed = false, guest_gallery_enabled = false, auto_approve = true where id = 1;
+select content_version as v0 from public.event \gset
+select set_config('request.jwt.claim.sub', :'carla', false);
+select t.ok('direto: recado já sai aprovado', (public.submit_message('10000000-0000-0000-0000-0000000000d1', 'Oi, Hazel!')->>'status') = 'approved');
+select t.ok('direto: reenvio não duplica', (public.submit_message('10000000-0000-0000-0000-0000000000d1', 'Oi, Hazel!')->>'duplicate')::boolean);
+insert into storage.objects (bucket_id, name) values ('hazel-photos', :'carla' || '/20000000-0000-0000-0000-0000000000d2.jpg');
+select t.ok('direto: foto já sai aprovada', (public.submit_photo('20000000-0000-0000-0000-0000000000d2', '', 800, 600)->>'status') = 'approved');
+select t.denied('direto: convidado continua sem mudar a configuração', $$update public.event set auto_approve = false$$);
+reset role;
+insert into public.tv_devices values (:'tv') on conflict do nothing;
+set role authenticated;
+select set_config('request.jwt.claim.sub', :'tv', false);
+select t.ok('direto: TV vê o recado e o girassol na hora', (select count(*) from public.messages where body = 'Oi, Hazel!') = 1 and (select count(*) from public.garden_flowers where name = 'Carla') = 1);
+select t.ok('direto: TV vê a foto na hora', (select count(*) from public.photos where id = '20000000-0000-0000-0000-0000000000d2') = 1);
+select t.ok('direto: TV foi avisada (uma vez por item)', (select content_version from public.event) = :v0 + 2);
+select set_config('request.jwt.claim.sub', :'admin', false);
+select t.ok('direto: pais retiram da TV', (public.admin_moderate('message', '10000000-0000-0000-0000-0000000000d1', 'removed')->>'changed')::boolean);
+select set_config('request.jwt.claim.sub', :'tv', false);
+select t.ok('direto: retirado some da TV, com o girassol', (select count(*) from public.messages where body = 'Oi, Hazel!') = 0 and (select count(*) from public.garden_flowers where name = 'Carla') = 0);
 reset role;
 \echo TODAS AS VERIFICACOES PASSARAM

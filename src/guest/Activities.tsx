@@ -99,7 +99,9 @@ export function MessageView({ live }: { live: Live }) {
 
       {justSent && (
         <Notice tone="ok">
-          Recado enviado. Ele aguarda a aprovação dos pais e, depois disso, aparece na TV com o seu girassol.
+          {live.event?.auto_approve
+            ? 'Recado enviado. Olhe para a TV: ele aparece em instantes, com o seu girassol.'
+            : 'Recado enviado. Ele aguarda a aprovação dos pais e, depois disso, aparece na TV com o seu girassol.'}
         </Notice>
       )}
 
@@ -205,10 +207,13 @@ export function AlbumView({ live }: { live: Live }) {
       {!blocked && !photo && (
         <div className="grid gap-3">
           <p className="m-0 text-bark-soft">
-            As fotos são reduzidas antes do envio para gastar pouca internet. Elas aparecem na TV depois que os pais aprovarem.
+            As fotos são reduzidas antes do envio para gastar pouca internet.{' '}
+            {live.event?.auto_approve ? 'Elas entram no álbum da TV assim que chegam.' : 'Elas aparecem na TV depois que os pais aprovarem.'}
           </p>
           {stage === 'done' && (
-            <Notice tone="ok">Foto enviada. Ela aguarda a aprovação dos pais. Quer mandar mais uma?</Notice>
+            <Notice tone="ok">
+              {live.event?.auto_approve ? 'Foto enviada. Ela já está no álbum da TV.' : 'Foto enviada. Ela aguarda a aprovação dos pais.'} Quer mandar mais uma?
+            </Notice>
           )}
           {error && <Notice>{errorText(error)}</Notice>}
           {stage === 'preparing' ? (

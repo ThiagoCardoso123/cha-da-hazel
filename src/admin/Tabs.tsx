@@ -548,6 +548,24 @@ export function EventTab({ live, stats, onSignOut }: { live: Live; stats: AdminS
         {ev.is_closed && <p className="mt-2 text-bark-soft">Com o evento encerrado, todas as atividades ficam bloqueadas.</p>}
       </Section>
 
+      <Section title="Aprovação antes da TV">
+        <div className="flex items-center justify-between gap-3 rounded-2xl bg-paper px-4 py-3 shadow-sm">
+          <span className="min-w-0">
+            <span className="block text-lg font-bold">{ev.auto_approve ? 'Desligada' : 'Ligada'}</span>
+            <span className="block text-bark-soft">
+              {ev.auto_approve
+                ? 'Recados e fotos aparecem na TV assim que chegam. Você retira o que não quiser na aba Conteúdo.'
+                : 'Nada aparece na TV antes de você aprovar na aba Conteúdo.'}
+            </span>
+          </span>
+          <button type="button" role="switch" aria-checked={!ev.auto_approve} aria-label="Exigir aprovação antes de mostrar na TV"
+            disabled={busy} onClick={() => void patch({ auto_approve: !ev.auto_approve })}
+            className="min-h-11 shrink-0 rounded-full bg-butter px-4 font-bold disabled:opacity-50">
+            {ev.auto_approve ? 'Ligar' : 'Desligar'}
+          </button>
+        </div>
+      </Section>
+
       {stats && (
         <Section title="Números">
           <dl className="m-0 grid grid-cols-2 gap-2">

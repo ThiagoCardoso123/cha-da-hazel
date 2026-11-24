@@ -207,7 +207,7 @@ function Welcome({ closed, onJoined }: { closed: boolean; onJoined: (p: Particip
             Entrar na festa
           </Button>
           <p className="mt-4 text-center text-sm text-bark-soft">
-            Sem cadastro. Fotos e recados aprovados pelos pais poderão aparecer na TV da festa.
+            Sem cadastro. Seus recados e fotos poderão aparecer na TV da festa.
           </p>
         </form>
       )}

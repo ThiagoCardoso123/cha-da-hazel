@@ -11,6 +11,8 @@ export interface EventState {
   guesses_open: boolean;
   quiz_open: boolean;
   is_closed: boolean;
+  /** true: recados e fotos vão direto para a TV, sem aprovação prévia */
+  auto_approve: boolean;
   guest_gallery_enabled: boolean;
   message_seconds: number;
   photo_seconds: number;

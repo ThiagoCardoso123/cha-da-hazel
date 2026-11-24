@@ -181,7 +181,7 @@ export function GardenMode({ content, seconds }: { content: TvContent; seconds: 
         <div className="absolute text-center" style={{ left: 300, right: 520, top: 360 }}>
           <p className="font-hand m-0 text-bark" style={{ fontSize: 58 }}>O jardim espera o primeiro girassol</p>
           <p className="m-0 text-bark-soft" style={{ fontSize: 32 }}>
-            Aponte a câmera para o QR Code e escreva um recado para a Hazel. Cada recado aprovado faz nascer uma flor com o seu nome.
+            Aponte a câmera para o QR Code e escreva um recado para a Hazel. Cada recado faz nascer uma flor com o seu nome.
           </p>
         </div>
       )}

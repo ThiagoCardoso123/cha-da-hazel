@@ -44,9 +44,9 @@ export function errorText(code: string): string {
 
 export const STATUS_LABEL: Record<ModStatus, string> = {
   pending: 'Aguardando aprovação',
-  approved: 'Aprovado para a TV',
+  approved: 'Na TV',
   rejected: 'Não será exibido',
-  removed: 'Retirado da exibição',
+  removed: 'Retirado da TV',
 };
 
 // ------------------------------------------------------------------ pequenos utilitários

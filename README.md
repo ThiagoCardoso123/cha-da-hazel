@@ -25,7 +25,7 @@ Guia do dia da festa: [`docs/OPERACAO.md`](docs/OPERACAO.md). O que foi testado 
 1. Crie um projeto em <https://supabase.com> (o plano gratuito atende uma festa).
 2. **Authentication → Sign In / Providers**: ative **Allow anonymous sign-ins**. É o que permite entrar sem cadastro.
 3. **Authentication → Rate Limits**: aumente o limite de **logins anônimos** (o padrão é 30 por hora *por endereço IP*, e todo o Wi-Fi da festa conta como um IP só). Coloque um valor folgado, por exemplo 300. **Sem isso, o 31º convidado no mesmo Wi-Fi não consegue entrar.** Confira esse ajuste no painel antes do evento.
-4. **SQL Editor**: cole e rode o arquivo `supabase/migrations/0001_cha_da_hazel.sql` inteiro, uma única vez. Ele cria tabelas, permissões, funções, o bucket privado de fotos e liga o tempo real.
+4. **SQL Editor**: cole e rode, na ordem e uma única vez cada, os arquivos de `supabase/migrations/` (`0001_cha_da_hazel.sql` e `0002_publicacao_direta.sql`). Ele cria tabelas, permissões, funções, o bucket privado de fotos e liga o tempo real.
 
 ### 2. Criar o administrador inicial
 
@@ -77,9 +77,13 @@ Faça o roteiro de [`docs/OPERACAO.md`](docs/OPERACAO.md) com dois celulares e a
 - **Resposta do quiz**: fica em tabela que só os pais leem. A linha pública da rodada só recebe a resposta e o resultado no momento em que os pais revelam, então nem consultas nem eventos de tempo real a expõem antes.
 - **Depois do evento**: nada fica público automaticamente. Os pais podem liberar (e fechar de novo) uma versão de leitura, visível apenas para quem participou, no próprio celular.
 
+### Publicação direta (padrão)
+
+Por decisão dos pais, recados e fotos vão **direto para a TV**, sem aprovação prévia: o girassol nasce assim que o recado chega. Qualquer item pode ser retirado em *Painel → Conteúdo → Retirar da TV*, e a pessoa pode enviar outro. A aprovação prévia continua disponível em *Painel → Evento → Aprovação antes da TV*; com ela ligada, nada aparece na TV antes de ser aprovado. Nos dois modos, o que cada um enxerga segue as mesmas regras acima (a TV só lê itens com situação "aprovado").
+
 ### Limitação assumida
 
-Sem cadastro, o controle é **por sessão/aparelho**, não por pessoa. Quem limpar os dados do navegador ou usar outro aparelho entra como novo participante e pode votar ou palpitar de novo. Para uma festa entre amigos e família, isso foi preferido a exigir login. Nomes e conteúdos só chegam à TV depois de aprovados pelos pais; ao corrigir o nome, o girassol já plantado só muda quando um novo recado for aprovado.
+Sem cadastro, o controle é **por sessão/aparelho**, não por pessoa. Quem limpar os dados do navegador ou usar outro aparelho entra como novo participante e pode votar ou palpitar de novo. Para uma festa entre amigos e família, isso foi preferido a exigir login. Com a publicação direta, nomes e conteúdos chegam à TV sem revisão; ao corrigir o nome, o girassol já plantado só muda no próximo recado enviado.
 
 ## Limites contra excesso
 

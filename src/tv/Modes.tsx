@@ -31,7 +31,7 @@ export function AlbumMode({ content, seconds }: { content: TvContent; seconds: n
   if (count === 0) {
     return (
       <TvEmpty title="O álbum começa com a sua foto">
-        Abra “Álbum da festa” no celular e envie um clique de hoje. As fotos aparecem aqui depois de aprovadas.
+        Abra “Álbum da festa” no celular e envie um clique de hoje. As fotos aparecem aqui.
       </TvEmpty>
     );
   }

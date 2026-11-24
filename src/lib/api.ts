@@ -131,7 +131,7 @@ export async function serverTime(): Promise<number> {
 // ------------------------------------------------------------------ estado ao vivo
 
 const EVENT_COLS =
-  'tv_mode,messages_open,photos_open,guesses_open,quiz_open,is_closed,guest_gallery_enabled,message_seconds,photo_seconds,current_round_id,content_version';
+  'tv_mode,messages_open,photos_open,guesses_open,quiz_open,is_closed,auto_approve,guest_gallery_enabled,message_seconds,photo_seconds,current_round_id,content_version';
 
 export function fetchEvent(): Promise<EventState> {
   return run<EventState>(sb().from('event').select(EVENT_COLS).eq('id', 1).single());

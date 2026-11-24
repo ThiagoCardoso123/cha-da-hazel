@@ -6,14 +6,16 @@
 2. Aba **TV → Ligar a TV → Copiar link**. Envie o link para o computador ligado à TV (por e-mail ou mensagem para você mesmo) e abra no Chrome ou Edge.
 3. Na TV, clique em **Entrar em tela cheia** (ou tecla **F**). O aviso some sozinho; mexer o mouse traz o botão de volta.
 4. No computador, desative suspensão e proteção de tela. O site pede ao navegador para manter a tela ligada, mas não controla a energia nem as configurações da TV.
-5. Teste com um celular: aponte para o QR Code, entre, mande um recado, aprove no painel e veja o girassol nascer.
+5. Teste com um celular: aponte para o QR Code, entre, mande um recado e veja o girassol nascer na TV.
 
 ## Durante a festa (tudo pelo celular)
 
+**Recados e fotos vão direto para a TV, sem aprovação.** Se algo sair errado, abra a aba **Conteúdo**, toque em **Retirar da TV** e peça para a pessoa enviar de novo. Para voltar a aprovar antes de exibir, ligue em **Evento → Aprovação antes da TV**.
+
 | Quero… | Onde |
 |---|---|
-| Aprovar ou recusar recados e fotos | aba **Aprovar** (o número vermelho mostra a fila) |
-| Tirar da TV algo já aprovado | **Aprovar → Já avaliados → Retirar da TV** |
+| Tirar da TV um recado ou foto | aba **Conteúdo → Enviados → Retirar da TV** |
+| Aprovar ou recusar (só com a aprovação ligada) | aba **Conteúdo** (o número vermelho mostra a fila) |
 | Trocar o que a TV mostra | aba **TV** |
 | Mudar o tempo de cada recado ou foto | aba **TV → Tempo de exibição** |
 | Fazer uma pergunta | aba **Quiz → Colocar no ar** (a TV vai para o quiz sozinha) |
@@ -31,7 +33,7 @@ Lembre: as perguntas sugeridas começam como enquete. Para valer como quiz, edit
 ### Bom saber
 
 - Cada pessoa ganha **um** girassol, no primeiro recado aprovado. Recados seguintes aparecem em cartão, sem flor nova.
-- Se aprovar muitos recados de uma vez, a TV mostra em cartão os mais recentes e passa mais rápido; os outros entram no rodízio normal.
+- Se chegarem muitos recados de uma vez, a TV mostra em cartão os mais recentes e passa mais rápido; os outros entram no rodízio normal.
 - Com mais de 21 girassóis, o jardim vira páginas que se alternam.
 - Dois celulares podem aprovar ao mesmo tempo sem conflito.
 
